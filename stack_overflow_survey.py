@@ -63,3 +63,12 @@ def languages_breakdown(year):
     summary['percent'] = summary['count']/total*100
     
     return summary
+
+if __name__ == "__main__":
+    
+    totals = {}
+    for year in urls.keys():
+        totals = languages_breakdown(year).to_dict()
+    
+    with open('data.json', 'w') as fo:
+        fo.write(json.dumps(totals, indent=4, separators=([',','; '])))
