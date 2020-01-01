@@ -41,3 +41,25 @@ def download_survey(year):
     shutil.move('data/' + filenames[year], survey_csvname(year))
     shutil.rmtree('data', ignore_errors=True)
     os.remove('survey.zip')
+
+def languages_breakdown(year):
+
+    file_exists = os.path.exists(survey_csvname(year))
+    if not file_exists:
+        download_survey(year)
+
+    print(f"Processing {year}")
+    data = pd.read_csv(survey_csvname(year), encoding='latin1')
+    # print(data[1:3]['HaveWorkedLanguage'])
+
+    languages = data[question_name[year]].str.split(';', expand=True)
+    languages = languages.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+
+    summary = languages.apply(pd.Series.value_counts)
+    summary = pd.DataFrame({'count': summary.sum(axis=1)})
+    # summary.to_csv(r'summaries.csv')
+
+    total = data[data[question_name[year]].notnull()].shape[0]
+    summary['percent'] = summary['count']/total*100
+    
+    return summary
