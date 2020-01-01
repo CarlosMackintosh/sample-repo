@@ -26,8 +26,10 @@ question_name = {
     2019: 'LanguageWorkedWith',
 }
 
+
 def survey_csvname(year):
     return 'survey{}.csv'.format(year)
+
 
 def download_survey(year):
     request = rq.get(urls[year])
@@ -42,6 +44,7 @@ def download_survey(year):
     shutil.rmtree('data', ignore_errors=True)
     os.remove('survey.zip')
 
+
 def languages_breakdown(year):
 
     file_exists = os.path.exists(survey_csvname(year))
@@ -53,7 +56,8 @@ def languages_breakdown(year):
     # print(data[1:3]['HaveWorkedLanguage'])
 
     languages = data[question_name[year]].str.split(';', expand=True)
-    languages = languages.apply(lambda x: x.str.strip() if x.dtype == "object" else x)
+    languages = languages.apply(
+        lambda x: x.str.strip() if x.dtype == "object" else x)
 
     summary = languages.apply(pd.Series.value_counts)
     summary = pd.DataFrame({'count': summary.sum(axis=1)})
@@ -61,14 +65,15 @@ def languages_breakdown(year):
 
     total = data[data[question_name[year]].notnull()].shape[0]
     summary['percent'] = summary['count']/total*100
-    
+
     return summary
 
+
 if __name__ == "__main__":
-    
+
     totals = {}
     for year in urls.keys():
         totals = languages_breakdown(year).to_dict()
-    
+
     with open('data.json', 'w') as fo:
-        fo.write(json.dumps(totals, indent=4, separators=([',','; '])))
+        fo.write(json.dumps(totals, indent=4, separators=([',', '; '])))
