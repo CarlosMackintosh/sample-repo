@@ -28,3 +28,16 @@ question_name = {
 
 def survey_csvname(year):
     return 'survey{}.csv'.format(year)
+
+def download_survey(year):
+    request = rq.get(urls[year])
+
+    with open('survey.zip', 'wb') as file:
+        file.write(request.content)
+
+    with zpf.ZipFile('survey.zip', 'r') as zipfile:
+        zipfile.extractall('data')
+
+    sh.move('data/' + filenames[year], survey_csvname(year))
+    sh.rmtree('data', ignore_errors=True)
+    os.remove('survey.zip')
