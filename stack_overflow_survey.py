@@ -1,6 +1,6 @@
 import requests as rq
 import zipfile as zpf
-import shutil as sh
+import shutil
 import os
 import pandas as pd
 import json
@@ -38,6 +38,6 @@ def download_survey(year):
     with zpf.ZipFile('survey.zip', 'r') as zipfile:
         zipfile.extractall('data')
 
-    sh.move('data/' + filenames[year], survey_csvname(year))
-    sh.rmtree('data', ignore_errors=True)
+    shutil.move('data/' + filenames[year], survey_csvname(year))
+    shutil.rmtree('data', ignore_errors=True)
     os.remove('survey.zip')
