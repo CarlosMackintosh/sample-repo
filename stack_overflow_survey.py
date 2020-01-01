@@ -26,3 +26,5 @@ question_name = {
     2019: 'LanguageWorkedWith',
 }
 
+def survey_csvname(year):
+    return 'survey{}.csv'.format(year)
