@@ -1,0 +1,5 @@
+survey*.csv
+data.json
+.vscode/*
+.vscode
+survey.py
